@@ -16,9 +16,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final CartService _cartService = CartService();
   String? _corSelecionada;
   int _quantidade = 1;
+  String? _tamanhoSelecionado;
 
   void _adicionarAoCarrinho(Produto produto) {
-    _cartService.adicionarProduto(produto);
+    _cartService.adicionarProduto(
+      produto,
+      quantidade: _quantidade,
+      cor: _corSelecionada,
+      tamanho: _tamanhoSelecionado,
+    );
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -42,7 +48,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Breadcrumb
             Padding(
               padding: const EdgeInsets.all(16),
               child: GestureDetector(
@@ -61,8 +66,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
               ),
             ),
-
-            // Imagem do produto
             Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -75,13 +78,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Nome
                   Text(
                     produto.titulo,
                     style: TextStyle(
@@ -91,8 +92,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-
-                  // Ações
                   Row(
                     children: const [
                       Icon(Icons.share_outlined, size: 28),
@@ -101,8 +100,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
-
-                  // Descrição
                   Text(
                     produto.descricao,
                     style: TextStyle(
@@ -112,8 +109,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-
-                  // Preço
                   Text(
                     'R\$ ${produto.preco.toStringAsFixed(2)}',
                     style: TextStyle(
@@ -124,8 +119,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Cor do tecido
                   Text(
                     'Escolha a cor do tecido',
                     style: TextStyle(
@@ -153,8 +146,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     );
                   }),
                   const SizedBox(height: 12),
-
-                  // Quantidade
                   DropdownButtonFormField<int>(
                     decoration: InputDecoration(
                       labelText: 'Quantidade',
@@ -173,8 +164,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     },
                   ),
                   const SizedBox(height: 12),
-
-                  // Tamanho
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       labelText: 'Tamanho',
@@ -182,14 +171,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
+                    value: _tamanhoSelecionado,
                     items: ['P', 'M', 'G', 'GG']
                         .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                         .toList(),
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      setState(() => _tamanhoSelecionado = value);
+                    },
                   ),
                   const SizedBox(height: 24),
-
-                  // Botão adicionar ao carrinho
                   SizedBox(
                     width: double.infinity,
                     height: 52,
